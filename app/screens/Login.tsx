@@ -1,20 +1,40 @@
-import {View,Text,Image,StyleSheet,TextInput,TouchableOpacity} from 'react-native'
+import {View,Text,Image,StyleSheet,TextInput,TouchableOpacity,Alert} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useState } from 'react';
+import { loginPersonagem } from '../src/storage';
 
-type RootStackParamList = { Login: undefined; Register: undefined };
+type RootStackParamList = { Login: undefined; Register: undefined, Home: { id: string } };
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 export default function Login() {
     const navigation = useNavigation<LoginScreenNavigationProp>();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    async function handleLogin() {
+        if (!email || !password) {
+            Alert.alert('Erro', 'Preencha todos os campos');
+            return;
+        }
+
+        const personagem = await loginPersonagem(email, password);
+
+        if (personagem) {
+            Alert.alert('Sucesso', `Bem-vindo, ${personagem.name}!`);
+            navigation.navigate('Home',{ id: personagem.id });
+        } else {
+            Alert.alert('Erro', 'Email ou senha incorretos');
+        }
+    }
 
     return(
         <View style= {styles.container}>
             <Image source={require('../../assets/img/1.png')} style={styles.image} />
             <Text style={styles.title}> Retorne à sua alma, Guerreiro</Text>  
-            <TextInput style={styles.input} placeholder="Email" />
-            <TextInput style={styles.input} placeholder="Senha" secureTextEntry={true} />
-            <TouchableOpacity style={styles.botão} onPress={() => {}}>
+            <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />
+            <TextInput style={styles.input} placeholder="Senha" secureTextEntry={true} value={password} onChangeText={setPassword} />
+            <TouchableOpacity style={styles.botão} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Entrar</Text>
             </TouchableOpacity>
             <Text style={styles.text}>Não tem uma conta?
