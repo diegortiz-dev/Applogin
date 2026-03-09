@@ -1,18 +1,26 @@
-import { Link } from '@react-navigation/native';
-import {View,Text,Image,StyleSheet,TextInput, TouchableOpacity} from 'react-native'
+import {View,Text,Image,StyleSheet,TextInput,TouchableOpacity} from 'react-native'
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = { Login: undefined; Register: undefined };
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 export default function Login() {
+    const navigation = useNavigation<LoginScreenNavigationProp>();
+
     return(
         <View style= {styles.container}>
             <Image source={require('../../assets/img/1.png')} style={styles.image} />
-            <Text style={styles.title}> Entre na sua conta</Text>  
+            <Text style={styles.title}> Retorne à sua alma, Guerreiro</Text>  
             <TextInput style={styles.input} placeholder="Email" />
             <TextInput style={styles.input} placeholder="Senha" secureTextEntry={true} />
             <TouchableOpacity style={styles.botão} onPress={() => {}}>
                 <Text style={styles.buttonText}>Entrar</Text>
             </TouchableOpacity>
             <Text style={styles.text}>Não tem uma conta?
-                <Link href="/Register" style={styles.link}> Crie uma!</Link>
+                <TouchableOpacity onPress={() =>navigation.navigate('Register')}>
+                    <Text style={styles.link}> Crie uma!</Text>
+                </TouchableOpacity>
             </Text>
         </View>
     )
@@ -28,7 +36,8 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginVertical: 8,
-        marginBottom:20
+        marginBottom:20,
+        textAlign: 'center',
     },
     image: {
         width: 300,
@@ -46,7 +55,10 @@ const styles = StyleSheet.create({
         borderWidth:4,
         height:50,
         marginBottom:20,
-        color:"#3d3d3dff"
+        color:"#3d3d3dff",
+        fontFamily: 'Sans-serif',
+        fontSize: 16,
+        borderRadius: 10,
 
     },
     botão: {
